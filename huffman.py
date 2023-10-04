@@ -131,7 +131,7 @@ class Huffman:
         return original_message_size, encoded_message_size, message_with_tree, compression_rate, tree_size
 
 
-def test_bit_flip(binary_message, corruption_level, seed="None"):
+def test_bit_flip(binary_message, corruption_level, seed=None):
     """Simulates bit flips based on corruption level on a binary string.
 
     Args:
