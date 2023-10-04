@@ -12,6 +12,14 @@ class Node:
         return self.freq < other.freq
 
 def calculate_tree_size(node):
+    """Calculates the size of a tree recursively.
+
+    Args:
+        node (Node): the root node of the tree
+
+    Returns:
+        integer: the size of this node and it's children
+    """
     if not node:
         return 0
 
@@ -26,7 +34,14 @@ def calculate_tree_size(node):
     return size
 
 class Huffman:
+    """The class to simulate Huffman Coding
+    """
     def __init__(self, data):
+        """Initialization function
+
+        Args:
+            data (dictionary): key:value dictionary of chars and frequency
+        """
         self.root = self._build_huffman_tree(data)
         self.mapping = self._create_mapping(self.root)
         self.message = ""
@@ -64,6 +79,11 @@ class Huffman:
         return mapping
 
     def setMessage(self, message):
+        """Sets the message
+
+        Args:
+            message (String): message
+        """
         self.message = message
         self.encoded_message = self._encode_message(self.message)
 
@@ -112,6 +132,17 @@ class Huffman:
 
 
 def test_bit_flip(binary_message, corruption_level, seed="None"):
+    """Simulates bit flips based on corruption level on a binary string.
+
+    Args:
+        binary_message (string): Binary string to be "corrupted"
+        corruption_level (integer): Level of corruption [0-100]
+        seed (str, optional): String for the RNG. Defaults to "None".
+
+    Returns:
+        string: the corrupted message
+        list: the indexes that got corrupted
+    """
     import random
     if seed is not None:
         random.seed(seed)
@@ -127,6 +158,15 @@ def test_bit_flip(binary_message, corruption_level, seed="None"):
     return ''.join(corrupted_message), corrupted_indexes
 
 def correct_percentage(original, decoded):
+    """Temporary function to calculate the percentage of correctness between two strings. Will be superseeded with Levenshtein Distance.        
+
+    Args:
+        original (string): original message
+        decoded (string): decoded message
+
+    Returns:
+        integer: percentage of similarity
+    """
     if len(original) != len(decoded):
         return 0.0
 
