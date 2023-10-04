@@ -85,15 +85,15 @@ class Huffman:
             message (String): message
         """
         self.message = message
-        self.encoded_message = self._encode_message(self.message)
+        self.encoded_message = self.encode_message(self.message)
 
     def getMessage(self):
-        return self._decode_message(self.encoded_message)
+        return self.decode_message(self.encoded_message)
 
-    def _encode_message(self, message):
+    def encode_message(self, message):
         return ''.join(self.mapping[char] for char in message)
 
-    def _decode_message(self, encoded_message):
+    def decode_message(self, encoded_message):
         decoded_message = ''
         node = self.root
         for bit in encoded_message:
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     print(f"Error Level: {error_level}%")
     corrupted_message, corrupted_indexes = test_bit_flip(huffman.encoded_message, error_level)
     print(f"Corrupted Message: {corrupted_message}")
-    corrupted_decoded_message = huffman._decode_message(corrupted_message)
+    corrupted_decoded_message = huffman.decode_message(corrupted_message)
     print(f"Decoded Corrupted Message: {corrupted_decoded_message}")
     correct_percentage = correct_percentage(original_message, corrupted_decoded_message)
     print(f"We now have a {correct_percentage}% correctness rate")
