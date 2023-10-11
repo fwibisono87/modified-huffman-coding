@@ -1,5 +1,6 @@
 from huffmanDriver import headless as huffman_headless
 import random
+from concurrent.futures import ThreadPoolExecutor
 import time
 
 def print_huffman_results_pretty(string, errorlevel):
@@ -15,26 +16,32 @@ def print_huffman_results_pretty(string, errorlevel):
 def runErrorsAtRandom(string, repetition):
   string_length = len(string)
   array_of_difference = []
-  array_of_error_levels=[]
-  for i in range(repetition):
+  array_of_error_levels = []
+
+  def task(i):
     print(f"Running error {i} out of {repetition}")
-    errorLevel = random.randint(0,100)
+    errorLevel = random.randint(0, 100)
     array_of_error_levels.append(errorLevel)
     difference, _, _  = huffman_headless(string, errorLevel)
     array_of_difference.append(difference)
 
+  with ThreadPoolExecutor() as executor:
+    executor.map(task, range(repetition))
+
   average_dist = sum(array_of_difference)/len(array_of_difference)
   average_error_level = sum(array_of_error_levels)/len(array_of_error_levels)
+
   print("Average of error levels:")
   print(average_error_level)
   print("Average Levensthein Difference:")
-  print(average_error_level)
+  print(average_dist)
 
   correct_chars = string_length - average_dist
   print("Correct chars:")
   print(correct_chars)
   print("Correct chars percentage:")
   print(f"{correct_chars*100/string_length}%")
+
 
 with open ('./assets/pembukaan_uud_45.txt') as uud45:
   uud45_text = " ".join(line.strip() for line in uud45)  
