@@ -50,13 +50,14 @@ with open('assets/beemovie.txt', 'r') as f:
     testLines = test.readlines()
     numOfLines = 0
 
-    for line in testLines:
-      numOfLines += 1
-      this_res = print_huffman_results_pretty(corpus, line, 0)
-      sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']
-      sum_of_stats['compression_ratio']['normal'] += this_res['compression_ratio']['normal']
-      sum_of_stats['distance']['modified'] += this_res['distance']['modified']
-      sum_of_stats['distance']['normal'] += this_res['distance']['normal']
+    for i in range(10):
+      for line in testLines:
+        numOfLines += 1
+        this_res = print_huffman_results_pretty(corpus, line, 0)
+        sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']
+        sum_of_stats['compression_ratio']['normal'] += this_res['compression_ratio']['normal']
+        sum_of_stats['distance']['modified'] += this_res['distance']['modified']
+        sum_of_stats['distance']['normal'] += this_res['distance']['normal']
     
 
     no_error_normal_compression_ratio = sum_of_stats['compression_ratio']['normal'] / numOfLines
@@ -75,7 +76,7 @@ with open('assets/beemovie.txt', 'r') as f:
       }
     }
     
-    for i in range(1):
+    for i in range(10):
       for line in testLines:
         this_res = print_huffman_results_pretty(corpus, line, 10)
         sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']

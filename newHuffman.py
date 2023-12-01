@@ -11,7 +11,6 @@ class Node:
         self.left = None
         self.right = None
         
-    # Define comparators for the priority queue
     def __lt__(self, other):
         return self.frequency < other.frequency
     
@@ -28,11 +27,9 @@ class HuffmanCoding:
         self.root = self.build_huffman_tree()
 
     def build_huffman_tree(self):
-        # Create nodes for each symbol and add them to a priority queue
         priority_queue = [Node(symbol, frequency) for symbol, frequency in zip(self.lut_df['symbol'], self.lut_df['frequency'])]
         heapify(priority_queue)
         
-        # Build the tree until the priority queue has just one node left
         while len(priority_queue) > 1:
             left = heappop(priority_queue)
             right = heappop(priority_queue)
