@@ -31,6 +31,11 @@ def calculate_ngram_frequencies(text, n):
 def ngram_frequencies(text):
     return calculate_ngram_frequencies(text, 1), calculate_ngram_frequencies(text, 2), calculate_ngram_frequencies(text, 3)
 
+def character_frequencies(text):
+    return calculate_ngram_frequencies(text, 1)
+
+def get_character_frequencies(text):
+    return pd.DataFrame(character_frequencies(text))
 
 def get_ngram_frequencies(text, threshold=1.0):
     unigrams, bigrams, trigrams = ngram_frequencies(text)
@@ -43,8 +48,6 @@ def get_ngram_frequencies(text, threshold=1.0):
     trigrams_filtered = df_trigrams[df_trigrams['percentage'] >= threshold]
 
     lut_df = pd.concat([df_unigrams, bigrams_filtered, trigrams_filtered])
-
-
 
     return lut_df
 
@@ -63,9 +66,14 @@ def ngram(text):
     lut_df_sorted = lut_df.sort_values(by=['percentage'], ascending=False)
     print_table(lut_df_sorted, "N-Gram Frequencies")
 
-
+def unigram(text):
+    unigrams = calculate_ngram_frequencies(text, 1)
+    df_unigrams = pd.DataFrame(unigrams)
+    df_unigrams_sorted = df_unigrams.sort_values(by=['percentage'], ascending=False)
+    print_table(df_unigrams_sorted, "Unigram Frequencies")
 
 
 if __name__ == '__main__':
     text = load_sample_text()
     ngram(text)
+    unigram(text)

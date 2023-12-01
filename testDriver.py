@@ -1,52 +1,99 @@
-from huffmanDriver import headless as huffman_headless
-import random
-import time
+from newHuffman import normal_huffman, new_huffman 
 
-def print_huffman_results_pretty(string, errorlevel):
-  difference, corruptedmsg, corruptedIdx= huffman_headless(string, errorlevel)
+def print_huffman_results_pretty(corpus, string, errorlevel):
+  modified_huffman_res = new_huffman(corpus, string, errorRate=errorlevel, verbose=True)
+  normal_huffman_res = normal_huffman(corpus, string, errorRate=errorlevel, verbose=True)
+
   print("-----------")
-  print(f"Corrupted Message: {corruptedmsg}")
-  print("-----------")
-  print(f"Difference of encoded vs corrupted encoded message: {difference}")
-  print("-----------")
-  # print(f"Corrupted Indexes: {corruptedIdx}")
-  # print("-----------")
+  print("orignal string: " + string)
+  print("error level: " + str(errorlevel))
+  if(errorlevel == 0):
+    print("no errors")
+  print("output from modified huffman: " + modified_huffman_res['decoded_text'])
+  print("compression ratio: " + str(modified_huffman_res['compression_ratio']))
+  if(errorlevel > 0):
+    print("distance from original: " + str(modified_huffman_res['distance']))
+  print("output from normal huffman: " + normal_huffman_res['decoded_text'])
+  print("compression ratio: " + str(normal_huffman_res['compression_ratio']))
+  if(errorlevel > 0):
+    print("distance from original: " + str(normal_huffman_res['distance']))
+  
 
-def runErrorsAtRandom(string, repetition):
-  string_length = len(string)
-  array_of_difference = []
-  array_of_error_levels=[]
-  for i in range(repetition):
-    print(f"Running error {i} out of {repetition}")
-    errorLevel = random.randint(0,100)
-    array_of_error_levels.append(errorLevel)
-    difference, _, _  = huffman_headless(string, errorLevel)
-    array_of_difference.append(difference)
+  res = {
+    'compression_ratio': {
+      'modified': modified_huffman_res['compression_ratio'],
+      'normal': normal_huffman_res['compression_ratio']
+    },
+    'distance': {
+      'modified': modified_huffman_res['distance'],
+      'normal': normal_huffman_res['distance']
+    }
+  }
+  return res
 
-  average_dist = sum(array_of_difference)/len(array_of_difference)
-  average_error_level = sum(array_of_error_levels)/len(array_of_error_levels)
-  print("Average of error levels:")
-  print(average_error_level)
-  print("Average Levensthein Difference:")
-  print(average_error_level)
+with open('assets/beemovie.txt', 'r') as f:
+  lines = f.readlines()
+  corpus = ''.join(lines)
 
-  correct_chars = string_length - average_dist
-  print("Correct chars:")
-  print(correct_chars)
-  print("Correct chars percentage:")
-  print(f"{correct_chars*100/string_length}%")
+  sum_of_stats = {
+    'compression_ratio': {
+      'modified': 0,
+      'normal': 0
+    },
+    'distance': {
+      'modified': 0,
+      'normal': 0
+    }
+  }
 
-with open ('./assets/pembukaan_uud_45.txt') as uud45:
-  uud45_text = " ".join(line.strip() for line in uud45)  
-  print("===========")
-  print(uud45_text)
-  print("zero errors")
-  print_huffman_results_pretty(uud45_text, 0)
-  print("10% errors")
-  print_huffman_results_pretty(uud45_text, 10)
-  print("===========")
-  print("random errors")
-  start_time = time.time()
-  runErrorsAtRandom(uud45_text, 400)
-  elapsed_time = time.time() - start_time
-  print(f"It took {elapsed_time} seconds to run 400 random errors")
+  with open('assets/test_strings.txt', 'r') as test:
+    testLines = test.readlines()
+    numOfLines = 0
+
+    for line in testLines:
+      numOfLines += 1
+      this_res = print_huffman_results_pretty(corpus, line, 0)
+      sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']
+      sum_of_stats['compression_ratio']['normal'] += this_res['compression_ratio']['normal']
+      sum_of_stats['distance']['modified'] += this_res['distance']['modified']
+      sum_of_stats['distance']['normal'] += this_res['distance']['normal']
+    
+
+    no_error_normal_compression_ratio = sum_of_stats['compression_ratio']['normal'] / numOfLines
+    no_error_modified_compression_ratio = sum_of_stats['compression_ratio']['modified'] / numOfLines
+    no_error_normal_distance = sum_of_stats['distance']['normal'] / numOfLines
+    no_error_modified_distance = sum_of_stats['distance']['modified'] / numOfLines
+
+    sum_of_stats = {
+      'compression_ratio': {
+        'modified': 0,
+        'normal': 0
+      },
+      'distance': {
+        'modified': 0,
+        'normal': 0
+      }
+    }
+    
+    for i in range(1):
+      for line in testLines:
+        this_res = print_huffman_results_pretty(corpus, line, 10)
+        sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']
+        sum_of_stats['compression_ratio']['normal'] += this_res['compression_ratio']['normal']
+        sum_of_stats['distance']['modified'] += this_res['distance']['modified']
+        sum_of_stats['distance']['normal'] += this_res['distance']['normal']
+
+
+    print("===========")
+    print("test compression ratio")
+    print("===========")
+    print("compression ratio")
+    print("modified: " + str(no_error_modified_compression_ratio))
+    print("normal: " + str(no_error_normal_compression_ratio))
+
+    print("===========")
+    print("test distance")
+    print("===========")
+    print("distance")
+    print("modified: " + str(sum_of_stats['distance']['modified'] / numOfLines))
+    print("normal: " + str(sum_of_stats['distance']['normal'] / numOfLines))
