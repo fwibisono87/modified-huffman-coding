@@ -4,17 +4,9 @@ from collections import Counter
 import re
 
 def calculate_ngram_frequencies(text, n):
-    """
-    Calculate the frequencies of n-grams in the given text.
-
-    :param text: Input text string
-    :param n: Size of the n-gram (1 for unigram, 2 for bigram, 3 for trigram)
-    :return: A list of dictionaries containing 'symbol', 'frequency', and 'percentage'
-    """
     from collections import Counter
     import re
 
-    # clean_text = re.sub(r'[^A-Za-z]+', '', text).upper()
     clean_text = text.upper()
     ngrams = [clean_text[i:i+n] for i in range(len(clean_text)-n+1)]
     frequency = Counter(ngrams)
