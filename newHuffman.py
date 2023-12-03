@@ -1,6 +1,8 @@
 from heapq import heapify, heappop, heappush
 import random
 
+import numpy as np
+
 from ngrams import get_character_frequencies, get_ngram_frequencies, load_sample_text
 
 
@@ -121,6 +123,19 @@ def levenshtein_distance(s1, s2):
     
     return previous_row[-1]
 
+def calculate_wer(reference, hypothesis):
+    ref_words = reference.split()
+    hyp_words = hypothesis.split()
+    d = np.zeros((len(ref_words) + 1) * (len(hyp_words) + 1), dtype=np.uint8).reshape((len(ref_words) + 1, len(hyp_words) + 1))
+    for i in range(len(ref_words) + 1):
+        for j in range(len(hyp_words) + 1):
+            if i == 0: d[0][j] = j
+            elif j == 0: d[i][0] = i
+            elif ref_words[i - 1] == hyp_words[j - 1]: d[i][j] = d[i - 1][j - 1]
+            else: d[i][j] = 1 + min(d[i - 1][j], d[i][j - 1], d[i - 1][j - 1])
+    return d[-1][-1] / float(len(ref_words))
+
+
 def normal_huffman(corpus, input_text, verbose=False, errorRate=0):
     huffman_coding = HuffmanCoding(get_character_frequencies(corpus))
     huffman_codes = huffman_coding.generate_huffman_codes()
@@ -135,7 +150,8 @@ def normal_huffman(corpus, input_text, verbose=False, errorRate=0):
         'encoded_text': encoded_text,
         'decoded_text': decoded_text,
         'compression_ratio': compression_ratio,
-        'distance': levenshtein_distance(input_text, decoded_text)
+        'distance': levenshtein_distance(input_text, decoded_text),
+        'wer': calculate_wer(input_text, decoded_text),
     }
     if verbose:
         result['huffman_codes'] = huffman_codes
@@ -157,7 +173,8 @@ def new_huffman(corpus, input_text, verbose=False, errorRate = 0):
         'encoded_text': encoded_text,
         'decoded_text': decoded_text,
         'compression_ratio': compression_ratio,
-        'distance': levenshtein_distance(input_text, decoded_text)
+        'distance': levenshtein_distance(input_text, decoded_text),
+        'wer': calculate_wer(input_text, decoded_text),
     }
 
     if verbose:
