@@ -1,8 +1,9 @@
 import contextlib
 import io
+from os import error
 from newHuffman import normal_huffman, new_huffman 
 
-def print_huffman_results_pretty(corpus, string, errorlevel, writeToStdOut = False):
+def print_huffman_results_pretty(corpus, string, errorlevel):
   modified_huffman_res = new_huffman(corpus, string, errorRate=errorlevel, verbose=True)
   normal_huffman_res = normal_huffman(corpus, string, errorRate=errorlevel, verbose=True)
 
@@ -26,12 +27,13 @@ def print_huffman_results_pretty(corpus, string, errorlevel, writeToStdOut = Fal
       print("Word Error Rate: " + str(normal_huffman_res['wer']))
   
   captured_output = fInt.getvalue()
-  if(writeToStdOut):
-    print(captured_output)  
+  if(errorlevel > 0):
+    composedOutputFileName = "output_" + string[:6] +str(errorlevel) + ".txt"
+    with open(composedOutputFileName, 'w') as file:
+      file.write(captured_output)
+    
+  print(captured_output)  
   
-  composedOutputFileName = "output_" + string[:6] +str(errorlevel) + ".txt"
-  with open(composedOutputFileName, 'w') as file:
-    file.write(captured_output)
 
   res = {
     'compression_ratio': {
