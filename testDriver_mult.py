@@ -2,26 +2,36 @@ import contextlib
 import io
 from newHuffman import normal_huffman, new_huffman 
 
-def print_huffman_results_pretty(corpus, string, errorlevel):
+def print_huffman_results_pretty(corpus, string, errorlevel, writeToStdOut = False):
   modified_huffman_res = new_huffman(corpus, string, errorRate=errorlevel, verbose=True)
   normal_huffman_res = normal_huffman(corpus, string, errorRate=errorlevel, verbose=True)
 
-  print("-----------")
-  print("orignal string: " + string)
-  print("error level: " + str(errorlevel))
-  if(errorlevel == 0):
-    print("no errors")
-  print("output from modified huffman: " + modified_huffman_res['decoded_text'])
-  print("compression ratio: " + str(modified_huffman_res['compression_ratio']))
-  if(errorlevel > 0):
-    print("distance from original: " + str(modified_huffman_res['distance']))
-    print("Word Error Rate: " + str(modified_huffman_res['wer']))
-  print("output from normal huffman: " + normal_huffman_res['decoded_text'])
-  print("compression ratio: " + str(normal_huffman_res['compression_ratio']))
-  if(errorlevel > 0):
-    print("distance from original: " + str(normal_huffman_res['distance']))
-    print("Word Error Rate: " + str(normal_huffman_res['wer']))
   
+  fInt = io.StringIO()
+  with contextlib.redirect_stdout(fInt):
+    print("-----------")
+    print("orignal string: " + string)
+    print("error level: " + str(errorlevel))
+    if(errorlevel == 0):
+      print("no errors")
+    print("output from modified huffman: " + modified_huffman_res['decoded_text'])
+    print("compression ratio: " + str(modified_huffman_res['compression_ratio']))
+    if(errorlevel > 0):
+      print("distance from original: " + str(modified_huffman_res['distance']))
+      print("Word Error Rate: " + str(modified_huffman_res['wer']))
+    print("output from normal huffman: " + normal_huffman_res['decoded_text'])
+    print("compression ratio: " + str(normal_huffman_res['compression_ratio']))
+    if(errorlevel > 0):
+      print("distance from original: " + str(normal_huffman_res['distance']))
+      print("Word Error Rate: " + str(normal_huffman_res['wer']))
+  
+  captured_output = fInt.getvalue()
+  if(writeToStdOut):
+    print(captured_output)  
+  
+  composedOutputFileName = "output_" + string[:6] +str(errorlevel) + ".txt"
+  with open(composedOutputFileName, 'w') as file:
+    file.write(captured_output)
 
   res = {
     'compression_ratio': {
@@ -139,10 +149,8 @@ with contextlib.redirect_stdout(f):
   print("normal (error): " + str(error_normal_distance))
   print("-----------")
   print("Word Error Rate")
-  print("modified (no error): " + str(stats_error['wer']['modified']))
-  print("normal (no error): " + str(stats_error['wer']['normal']))
-  print("modified (error): " + str(stats_error['wer']['modified']))
-  print("normal (error): " + str(stats_error['wer']['normal']))
+  print("modified (error): " + str(stats_error['wer']['modified']/len(testLines)))
+  print("normal (error): " + str(stats_error['wer']['normal']/len(testLines)))
 
 captured_output = f.getvalue()
 print(captured_output)
