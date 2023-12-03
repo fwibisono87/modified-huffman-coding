@@ -47,6 +47,7 @@ def process_lines(testLines, corpus, error_mode, num_repetitions):
         'compression_ratio': {'modified': 0, 'normal': 0},
         'distance': {'modified': 0, 'normal': 0}
     }
+    total_length = 0
 
     # Repeat each line num_repetitions times
     args = [(line, corpus, error_mode) for line in testLines for _ in range(num_repetitions)]
@@ -54,13 +55,26 @@ def process_lines(testLines, corpus, error_mode, num_repetitions):
     with concurrent.futures.ProcessPoolExecutor() as executor:
         results = executor.map(process_line_helper, args)
 
-        for this_res in results:
+        for line, this_res in zip(testLines * num_repetitions, results):
+            line_length = len(line.strip())  # Strip to remove newline characters, if any
+            total_length += line_length
+
             sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']
             sum_of_stats['compression_ratio']['normal'] += this_res['compression_ratio']['normal']
-            sum_of_stats['distance']['modified'] += this_res['distance']['modified']
-            sum_of_stats['distance']['normal'] += this_res['distance']['normal']
 
-    return sum_of_stats
+            # Normalizing the distance by the length of the string
+            if line_length > 0:  # Avoid division by zero
+                normalized_modified_distance = this_res['distance']['modified'] / line_length
+                normalized_normal_distance = this_res['distance']['normal'] / line_length
+            else:
+                normalized_modified_distance = 0
+                normalized_normal_distance = 0
+
+            sum_of_stats['distance']['modified'] += normalized_modified_distance
+            sum_of_stats['distance']['normal'] += normalized_normal_distance
+
+    return sum_of_stats, total_length
+
 
 # Main part of the script
 with open('assets/beemovie.txt', 'r') as f:
