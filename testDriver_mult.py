@@ -105,7 +105,11 @@ error_normal_distance = stats_error['distance']['normal'] / total_length_error
 error_modified_distance = stats_error['distance']['modified'] / total_length_error
 
 
-# Print results
+
+print("===========")
+print("examples for 1% error rate")
+process_lines(testLines, corpus, 1, 1)
+
 print("===========")
 print("huffman comparisons")
 print("total number of lines: " + str(len(testLines)))
