@@ -53,7 +53,7 @@ class HuffmanCoding:
         return self.codes
     
 def train(text):
-    lut_df = get_ngram_frequencies(text, 1.0)
+    lut_df = get_ngram_frequencies(text, 1)
     huffman_coding = HuffmanCoding(lut_df)
     huffman_codes = huffman_coding.generate_huffman_codes()
     return huffman_codes

@@ -50,7 +50,7 @@ with open('assets/beemovie.txt', 'r') as f:
     testLines = test.readlines()
     numOfLines = 0
 
-    for i in range(10):
+    for i in range(100):
       for line in testLines:
         numOfLines += 1
         this_res = print_huffman_results_pretty(corpus, line, 0)
@@ -76,9 +76,9 @@ with open('assets/beemovie.txt', 'r') as f:
       }
     }
     
-    for i in range(10):
+    for i in range(100):
       for line in testLines:
-        this_res = print_huffman_results_pretty(corpus, line, 10)
+        this_res = print_huffman_results_pretty(corpus, line, 1)
         sum_of_stats['compression_ratio']['modified'] += this_res['compression_ratio']['modified']
         sum_of_stats['compression_ratio']['normal'] += this_res['compression_ratio']['normal']
         sum_of_stats['distance']['modified'] += this_res['distance']['modified']
