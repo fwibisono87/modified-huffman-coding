@@ -1,3 +1,5 @@
+import contextlib
+import io
 from newHuffman import normal_huffman, new_huffman 
 
 def print_huffman_results_pretty(corpus, string, errorlevel):
@@ -106,33 +108,41 @@ error_modified_distance = stats_error['distance']['modified'] / total_length_err
 
 
 
-print("===========")
-print("examples for 1% error rate")
-process_lines(testLines, corpus, 1, 1)
+f = io.StringIO()
+with contextlib.redirect_stdout(f):
+  print("===========")
+  print("examples for 1% error rate")
+  process_lines(testLines, corpus, 1, 1)
 
-print("===========")
-print("huffman comparisons")
-print("total number of lines: " + str(len(testLines)))
-print("===========")
-print("test compression ratio")
-print("===========")
-print("compression ratio")
-print("modified (no error): " + str(no_error_modified_compression_ratio))
-print("normal (no error): " + str(no_error_normal_compression_ratio))
-print("modified (error): " + str(error_modified_compression_ratio))
-print("normal (error): " + str(error_normal_compression_ratio))
+  print("===========")
+  print("huffman comparisons")
+  print("total number of lines: " + str(len(testLines)))
+  print("===========")
+  print("test compression ratio")
+  print("===========")
+  print("compression ratio")
+  print("modified (no error): " + str(no_error_modified_compression_ratio))
+  print("normal (no error): " + str(no_error_normal_compression_ratio))
+  print("modified (error): " + str(error_modified_compression_ratio))
+  print("normal (error): " + str(error_normal_compression_ratio))
 
-print("===========")
-print("test distance")
-print("===========")
-print("distance")
-print("modified (no error): " + str(no_error_modified_distance))
-print("normal (no error): " + str(no_error_normal_distance))
-print("modified (error): " + str(error_modified_distance))
-print("normal (error): " + str(error_normal_distance))
-print("-----------")
-print("Word Error Rate")
-print("modified (no error): " + str(stats_error['wer']['modified']))
-print("normal (no error): " + str(stats_error['wer']['normal']))
-print("modified (error): " + str(stats_error['wer']['modified']))
-print("normal (error): " + str(stats_error['wer']['normal']))
+  print("===========")
+  print("test distance")
+  print("===========")
+  print("distance")
+  print("modified (no error): " + str(no_error_modified_distance))
+  print("normal (no error): " + str(no_error_normal_distance))
+  print("modified (error): " + str(error_modified_distance))
+  print("normal (error): " + str(error_normal_distance))
+  print("-----------")
+  print("Word Error Rate")
+  print("modified (no error): " + str(stats_error['wer']['modified']))
+  print("normal (no error): " + str(stats_error['wer']['normal']))
+  print("modified (error): " + str(stats_error['wer']['modified']))
+  print("normal (error): " + str(stats_error['wer']['normal']))
+
+captured_output = f.getvalue()
+print(captured_output)
+
+with open('output.txt', 'w') as file:
+    file.write(captured_output)
