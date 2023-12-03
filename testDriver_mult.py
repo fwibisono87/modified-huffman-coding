@@ -13,10 +13,12 @@ def print_huffman_results_pretty(corpus, string, errorlevel):
   print("compression ratio: " + str(modified_huffman_res['compression_ratio']))
   if(errorlevel > 0):
     print("distance from original: " + str(modified_huffman_res['distance']))
+    print("Word Error Rate: " + str(modified_huffman_res['wer']))
   print("output from normal huffman: " + normal_huffman_res['decoded_text'])
   print("compression ratio: " + str(normal_huffman_res['compression_ratio']))
   if(errorlevel > 0):
     print("distance from original: " + str(normal_huffman_res['distance']))
+    print("Word Error Rate: " + str(normal_huffman_res['wer']))
   
 
   res = {
@@ -27,6 +29,10 @@ def print_huffman_results_pretty(corpus, string, errorlevel):
     'distance': {
       'modified': modified_huffman_res['distance'],
       'normal': normal_huffman_res['distance']
+    },
+    'wer': {
+      'modified': modified_huffman_res['wer'],
+      'normal': normal_huffman_res['wer']
     }
   }
   return res
@@ -120,3 +126,9 @@ print("modified (no error): " + str(no_error_modified_distance))
 print("normal (no error): " + str(no_error_normal_distance))
 print("modified (error): " + str(error_modified_distance))
 print("normal (error): " + str(error_normal_distance))
+print("-----------")
+print("Word Error Rate")
+print("modified (no error): " + str(stats_error['wer']['modified']))
+print("normal (no error): " + str(stats_error['wer']['normal']))
+print("modified (error): " + str(stats_error['wer']['modified']))
+print("normal (error): " + str(stats_error['wer']['normal']))
