@@ -71,7 +71,7 @@ with open('assets/test_strings.txt', 'r') as test:
     testLines = test.readlines()
 
 # Process lines without error
-stats_no_error = process_lines(testLines, corpus, 0, 1000)
+stats_no_error = process_lines(testLines, corpus, 0, 5)
 no_error_normal_compression_ratio = stats_no_error['compression_ratio']['normal'] / len(testLines)
 no_error_modified_compression_ratio = stats_no_error['compression_ratio']['modified'] / len(testLines)
 no_error_normal_distance = stats_no_error['distance']['normal'] / len(testLines)
