@@ -53,7 +53,8 @@ def process_line_helper(args):
 def process_lines(testLines, corpus, error_mode, num_repetitions):
     sum_of_stats = {
         'compression_ratio': {'modified': 0, 'normal': 0},
-        'distance': {'modified': 0, 'normal': 0}
+        'distance': {'modified': 0, 'normal': 0},
+        'wer': {'modified': 0, 'normal': 0}
     }
     total_length = 0
 
@@ -80,6 +81,8 @@ def process_lines(testLines, corpus, error_mode, num_repetitions):
 
             sum_of_stats['distance']['modified'] += normalized_modified_distance
             sum_of_stats['distance']['normal'] += normalized_normal_distance
+            sum_of_stats['wer']['modified'] += this_res['wer']['modified']
+            sum_of_stats['wer']['normal'] += this_res['wer']['normal']
 
     return sum_of_stats, total_length
 
